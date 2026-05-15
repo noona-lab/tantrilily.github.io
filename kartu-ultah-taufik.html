@@ -174,17 +174,18 @@
   <div id="music-bar">
     <span class="note" id="musicNote">♪</span>
     <div style="flex:1">
-      <div class="song-title">Kasih Putih — Glenn Fredly</div>
+      <div class="song-title">Until I Found You — Stephen Sanchez</div>
       <div class="song-artist" id="songStatus">sedang diputar...</div>
     </div>
     <button class="toggle-btn" id="toggleBtn" onclick="toggleMusic()">⏸</button>
   </div>
 
-  <div id="yt-wrap" style="position:absolute;width:1px;height:1px;opacity:0;pointer-events:none;overflow:hidden;">
-    <iframe id="yt-frame" width="1" height="1"
-      src="https://www.youtube.com/embed/3Qiv7UhkqYeBExD6gZ1m3k?enablejsapi=1&controls=0&loop=1&playlist=3Qiv7UhkqYeBExD6gZ1m3k"
-      allow="autoplay; encrypted-media" allowfullscreen frameborder="0"></iframe>
+  <div id="yt-wrap" style="display:none;">
+    <iframe id="yt-frame" width="1" height="1" src="" frameborder="0"></iframe>
   </div>
+  <audio id="bgMusic" loop>
+    <source src="Until I Found You – Stephen Sanchez.mpeg" type="audio/mpeg">
+  </audio>
 
   <!-- SLIDE 1 -->
   <div class="slide active" id="slide-1">
@@ -253,7 +254,7 @@
       <div class="heart-deco">🌸</div>
       <div class="letter-date">Untuk Taufik, di hari istimewamu</div>
       <div class="letter-body">
-        <p>Allooo... </p>
+        <p>Allooo 👋</p>
         <p>Selamat ulang tahun yaa! 🎂</p>
         <p>Semoga di usiamu yang baru ini, kamu selalu diberi kesehatan, rezeki yang berlimpah, dan selalu diberi kebahagiaan.</p>
         <p>Semoga langkahmu selalu ringan, hatimu selalu tenang, dan mimpimu satu persatu tercapai.</p>
@@ -329,9 +330,9 @@ function startExperience(){
   const splash = document.getElementById('splash');
   splash.classList.add('hide');
   setTimeout(()=>{ splash.style.display='none'; }, 800);
-  // Play music triggered by user interaction
-  const frame = document.getElementById('yt-frame');
-  frame.src = frame.src + '&autoplay=1';
+  const music = document.getElementById('bgMusic');
+  music.volume = 1.0;
+  music.play().catch(e=>console.log('play error:', e));
   startConfetti();
 }
 
@@ -343,35 +344,31 @@ for(let i=1;i<=TOTAL;i++){
   dotsEl.appendChild(d);
 }
 
-// Volume control via YouTube API
-let currentVolume = 100;
-function setYTVolume(vol){
-  const frame=document.getElementById('yt-frame');
-  frame.contentWindow.postMessage(`{"event":"command","func":"setVolume","args":[${vol}]}`,'*');
-}
+let currentVolume = 1.0;
 function fadeVolume(from, to, duration){
+  const music = document.getElementById('bgMusic');
   const steps = 20;
   const stepTime = duration / steps;
   const stepSize = (to - from) / steps;
   let step = 0;
   const interval = setInterval(()=>{
     step++;
-    currentVolume = Math.round(from + stepSize * step);
-    setYTVolume(currentVolume);
+    currentVolume = Math.min(1, Math.max(0, from + stepSize * step));
+    music.volume = currentVolume;
     if(step >= steps){ clearInterval(interval); currentVolume = to; }
   }, stepTime);
 }
 
 function toggleMusic(){
-  const frame=document.getElementById('yt-frame');
+  const music = document.getElementById('bgMusic');
   const btn=document.getElementById('toggleBtn');
   const note=document.getElementById('musicNote');
   const status=document.getElementById('songStatus');
   if(musicPlaying){
-    frame.contentWindow.postMessage('{"event":"command","func":"pauseVideo","args":""}','*');
+    music.pause();
     btn.textContent='▶'; note.style.animationPlayState='paused'; status.textContent='dijeda'; musicPlaying=false;
   } else {
-    frame.contentWindow.postMessage('{"event":"command","func":"playVideo","args":""}','*');
+    music.play();
     btn.textContent='⏸'; note.style.animationPlayState='running'; status.textContent='sedang diputar...'; musicPlaying=true;
   }
 }
@@ -391,29 +388,29 @@ function goToSlide(n){
   // Musik mengecil mulai dari slide 5 (after buka surat)
   if(musicPlaying){
     if(current >= 5 && prev < 5){
-      fadeVolume(100, 30, 1500); // fade down ke 30%
+      fadeVolume(1.0, 0.3, 1500);
     } else if(current < 5 && prev >= 5){
-      fadeVolume(30, 100, 1500); // fade up balik ke 100%
+      fadeVolume(0.3, 1.0, 1500);
     }
 
     // Pause musik di slide video (slide 8), resume kalau pindah
     if(current === 8){
       setTimeout(()=>{
-        const frame=document.getElementById('yt-frame');
-        frame.contentWindow.postMessage('{"event":"command","func":"pauseVideo","args":""}','*');
+        const music = document.getElementById('bgMusic');
+        music.pause();
         document.getElementById('toggleBtn').textContent='▶';
         document.getElementById('musicNote').style.animationPlayState='paused';
         document.getElementById('songStatus').textContent='dijeda';
         musicPlaying=false;
       }, 300);
     } else if(prev === 8 && current !== 8){
-      const frame=document.getElementById('yt-frame');
-      frame.contentWindow.postMessage('{"event":"command","func":"playVideo","args":""}','*');
+      const music = document.getElementById('bgMusic');
+      music.play();
       document.getElementById('toggleBtn').textContent='⏸';
       document.getElementById('musicNote').style.animationPlayState='running';
       document.getElementById('songStatus').textContent='sedang diputar...';
       musicPlaying=true;
-      fadeVolume(0, current >= 5 ? 30 : 100, 1000);
+      fadeVolume(0, current >= 5 ? 0.3 : 1.0, 1000);
     }
   }
 }
