@@ -107,7 +107,7 @@
   .dots { position: fixed; bottom: 32px; left: 50%; transform: translateX(-50%); display: flex; gap: 7px; z-index: 100; }
   .dot { width: 8px; height: 8px; border-radius: 50%; background: #d4b0b8; transition: background 0.3s, transform 0.3s; cursor: pointer; }
   .dot.active { background: #9a6070; transform: scale(1.35); }
- 
+
   /* Music bar */
   #music-bar { position: fixed; top: 0; left: 0; right: 0; z-index: 200; background: rgba(253,246,240,0.97); border-bottom: 0.5px solid #e8d0cc; padding: 9px 16px; display: flex; align-items: center; gap: 10px; }
   .note { font-size: 15px; color: #9a6070; animation: noteBounce 1.2s ease-in-out infinite; }
@@ -187,6 +187,32 @@
 </style>
 </head>
 <body>
+
+<!-- PIN SCREEN -->
+<div id="pin-screen">
+  <div class="pin-title">Masukkan Kode</div>
+  <div class="pin-sub">hanya untukmu 🌸</div>
+  <div class="pin-dots" id="pinDots">
+    <div class="pin-dot" id="d0"></div>
+    <div class="pin-dot" id="d1"></div>
+    <div class="pin-dot" id="d2"></div>
+    <div class="pin-dot" id="d3"></div>
+  </div>
+  <div class="pin-keypad">
+    <button class="pin-key" onclick="pinInput('1')">1</button>
+    <button class="pin-key" onclick="pinInput('2')">2</button>
+    <button class="pin-key" onclick="pinInput('3')">3</button>
+    <button class="pin-key" onclick="pinInput('4')">4</button>
+    <button class="pin-key" onclick="pinInput('5')">5</button>
+    <button class="pin-key" onclick="pinInput('6')">6</button>
+    <button class="pin-key" onclick="pinInput('7')">7</button>
+    <button class="pin-key" onclick="pinInput('8')">8</button>
+    <button class="pin-key" onclick="pinInput('9')">9</button>
+    <button class="pin-key" onclick="pinInput('0')">0</button>
+    <button class="pin-key del" onclick="pinDelete()">⌫</button>
+  </div>
+  <div class="pin-error" id="pinError">kode salah, coba lagi 🌸</div>
+</div>
 
 <!-- SPLASH SCREEN -->
 <div id="splash" onclick="startExperience()">
@@ -374,10 +400,10 @@
       <div class="heart-deco">🌸</div>
       <div class="letter-date">Untuk Taufik, di hari istimewamu</div>
       <div class="letter-body">
-        <p>Allooo.... </p>
+        <p>Allooo 👋</p>
         <p>Selamat ulang tahun yaa! 🎂</p>
-        <p>Semoga di usiamu yang baru ini, kamu selalu diberi kesehatan, rezeki yang berlimpah, dan selalu diberi kebahagiaan.</p>
-        <p>Semoga langkahmu selalu ringan, hatimu selalu tenang, dan mimpimu satu persatu tercapai.</p>
+        <p>Semoga di usiamu yang baru ini, kamu selalu diberi kesehatan, rizki yang berlimpah, diberi kebahagiaan.</p>
+        <p>Semoga langkahmu selalu ringan, hatimu selalu tenang, dan mimpimu satu-satu tercapai.</p>
         <p>Terimakasih sudah lahir dan tumbuh jadi pribadi sebaik ini, aku bangga sama kamu. 🌸</p>
         <p>Aku harap tahun ini banyak memberi kebahagiaan untukmu!</p>
       </div>
@@ -432,7 +458,41 @@ const TOTAL = 9;
 let current = 1;
 let musicPlaying = true;
 
-// Generate floating petals on splash
+// PIN logic
+const CORRECT_PIN = '3108';
+let pinValue = '';
+
+function pinInput(num){
+  if(pinValue.length >= 4) return;
+  pinValue += num;
+  document.getElementById('d'+(pinValue.length-1)).classList.add('filled');
+  if(pinValue.length === 4){
+    setTimeout(()=>{
+      if(pinValue === CORRECT_PIN){
+        const pin = document.getElementById('pin-screen');
+        pin.classList.add('hide');
+        setTimeout(()=>{ pin.style.display='none'; }, 600);
+      } else {
+        const dots = document.getElementById('pinDots');
+        dots.style.animation = 'shake 0.4s ease';
+        document.getElementById('pinError').classList.add('show');
+        setTimeout(()=>{
+          dots.style.animation = '';
+          pinValue = '';
+          for(let i=0;i<4;i++) document.getElementById('d'+i).classList.remove('filled');
+          document.getElementById('pinError').classList.remove('show');
+        }, 800);
+      }
+    }, 200);
+  }
+}
+
+function pinDelete(){
+  if(pinValue.length === 0) return;
+  pinValue = pinValue.slice(0,-1);
+  document.getElementById('d'+pinValue.length).classList.remove('filled');
+  document.getElementById('pinError').classList.remove('show');
+}
 const splashPetals = document.getElementById('splashPetals');
 const petalEmojis = ['🌸','✨','🌷','💛','🌺'];
 for(let i=0;i<16;i++){
