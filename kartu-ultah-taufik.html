@@ -513,7 +513,7 @@
 <script>
 const TOTAL = 10;
 let current = 1;
-let musicPlaying = true;
+let musicPlaying = false;
 
 // Wish / candle logic
 let wishDone = false;
@@ -670,11 +670,15 @@ function goToSlide(n){
     const music = document.getElementById('bgMusic');
     music.volume = 1.0;
     music.currentTime = 0;
-    music.play().catch(e=>console.log(e));
-    musicPlaying = true;
-    document.getElementById('toggleBtn').textContent='⏸';
-    document.getElementById('musicNote').style.animationPlayState='running';
-    document.getElementById('songStatus').textContent='sedang diputar...';
+    const playPromise = music.play();
+    if(playPromise !== undefined){
+      playPromise.then(()=>{
+        musicPlaying = true;
+        document.getElementById('toggleBtn').textContent='⏸';
+        document.getElementById('musicNote').style.animationPlayState='running';
+        document.getElementById('songStatus').textContent='sedang diputar...';
+      }).catch(e=>console.log('play error:',e));
+    }
   }
 
   if(musicPlaying){
