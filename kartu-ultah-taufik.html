@@ -118,9 +118,12 @@
   /* SLIDE 1 */
   #slide-1 { background: #fdf6f0; padding-top: 70px; }
   #confetti-canvas { position: absolute; top: 0; left: 0; width: 100%; height: 100%; pointer-events: none; }
-  .s1-hello { font-size: clamp(36px, 11vw, 52px); font-weight: 400; color: #5a3040; letter-spacing: 1px; opacity: 0; transform: scale(0.75); animation: helloIn 1.8s cubic-bezier(0.16,1,0.3,1) 0.4s forwards; position: relative; z-index: 2; }
-  .s1-name { font-size: clamp(24px, 8vw, 36px); font-weight: 400; color: #b8866a; letter-spacing: 6px; opacity: 0; animation: fadeUp 1s ease 2s forwards; margin-top: 8px; position: relative; z-index: 2; }
-  .s1-line { width: 60px; height: 1px; background: linear-gradient(90deg, transparent, #c4a882, transparent); margin: 20px auto 0; opacity: 0; animation: fadeUp 1s ease 2.4s forwards; position: relative; z-index: 2; }
+  .s1-hello { font-size: clamp(36px, 11vw, 52px); font-weight: 400; color: #5a3040; letter-spacing: 1px; position: relative; z-index: 2; opacity: 1; }
+  .s1-name { font-size: clamp(24px, 8vw, 36px); font-weight: 400; color: #b8866a; letter-spacing: 6px; margin-top: 8px; position: relative; z-index: 2; opacity: 1; }
+  .s1-line { width: 60px; height: 1px; background: linear-gradient(90deg, transparent, #c4a882, transparent); margin: 20px auto 0; position: relative; z-index: 2; opacity: 1; }
+  .s1-animate .s1-hello { animation: helloIn 1.8s cubic-bezier(0.16,1,0.3,1) 0.2s both; }
+  .s1-animate .s1-name { animation: fadeUp 1s ease 1.8s both; }
+  .s1-animate .s1-line { animation: fadeUp 1s ease 2.2s both; }
 
   /* SLIDE 2 - Wish */
   #slide-2 { background: linear-gradient(160deg, #1a1015 0%, #2a1520 100%) !important; padding-top: 0; }
@@ -139,7 +142,7 @@
 
   /* SLIDE 5 */
   #slide-5 { background: #fdf6f0; overflow-y: auto; }
-  #slide-6 { background: #fdf6f0; padding: 70px 16px 80px !important; overflow-y: auto; align-items: flex-start !important; justify-content: flex-start !important; }
+  #slide-6 { background: #fdf6f0; padding: 70px 16px 80px !important; overflow-y: auto; }
   .letter-paper { background: white; border-radius: 10px; padding: 28px 22px; max-width: 360px; width: 100%; border: 1px solid #e8d0cc; box-shadow: 0 6px 24px rgba(90,48,64,0.08); text-align: left; position: relative; overflow: hidden; animation: letterOpen 0.8s cubic-bezier(0.16,1,0.3,1) 0.2s both; margin: 8px 0; }
   .letter-paper::before { content: ''; position: absolute; top: 0; left: 0; right: 0; height: 3px; background: linear-gradient(90deg, #c4a882, #d4908a, #c4a882); }
   .letter-date { font-size: 12px; color: #b8a0a4; margin-bottom: 16px; font-style: italic; }
@@ -454,10 +457,10 @@
       <div class="heart-deco">🌸</div>
       <div class="letter-date">Untuk Taufik, di hari istimewamu</div>
       <div class="letter-body">
-        <p>Allooo 👋</p>
-        <p>Selamat ulang tahun yaa! 🎂</p>
-        <p>Semoga di usiamu yang baru ini, kamu selalu diberi kesehatan, rizki yang berlimpah, diberi kebahagiaan.</p>
-        <p>Semoga langkahmu selalu ringan, hatimu selalu tenang, dan mimpimu satu-satu tercapai.</p>
+        <p>Allooow   </p>
+        <p>Selamat ulang tahun aa 🎂</p>
+        <p>Semoga di usiamu yang baru ini, kamu selalu diberi kesehatan, rezki yang berlimpah, diberi kebahagiaan.</p>
+        <p>Semoga langkahmu selalu ringan, hatimu selalu tenang, dan mimpimu satu persatu tercapai.</p>
         <p>Terimakasih sudah lahir dan tumbuh jadi pribadi sebaik ini, aku bangga sama kamu. 🌸</p>
         <p>Aku harap tahun ini banyak memberi kebahagiaan untukmu!</p>
       </div>
@@ -551,7 +554,7 @@ function blowCandle(){
     sent.style.animation = 'wishFadeIn 1s ease forwards';
   }, 800);
 }
-const CORRECT_PIN = '3108';
+const CORRECT_PIN = '3102';
 let pinValue = '';
 
 function pinInput(num){
@@ -565,7 +568,9 @@ function pinInput(num){
         pin.classList.add('hide');
         setTimeout(()=>{
           pin.style.display='none';
-          startConfetti(); // confetti muncul setelah PIN benar
+          startConfetti();
+          // trigger slide 1 text animations
+          document.getElementById('slide-1').classList.add('s1-animate');
         }, 600);
       } else {
         const dots = document.getElementById('pinDots');
@@ -604,7 +609,10 @@ for(let i=0;i<16;i++){
 function startExperience(){
   const splash = document.getElementById('splash');
   splash.classList.add('hide');
-  setTimeout(()=>{ splash.style.display='none'; }, 800);
+  setTimeout(()=>{
+    splash.style.display='none';
+    document.getElementById('slide-1').classList.add('s1-animate');
+  }, 800);
 }
 
 const dotsEl = document.getElementById('dots');
