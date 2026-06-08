@@ -569,8 +569,17 @@ function pinInput(num){
         setTimeout(()=>{
           pin.style.display='none';
           startConfetti();
-          // trigger slide 1 text animations
           document.getElementById('slide-1').classList.add('s1-animate');
+          // Mulai musik di sini — ada interaksi user (tap PIN), browser pasti izinkan
+          const music = document.getElementById('bgMusic');
+          music.volume = 1.0;
+          music.currentTime = 0;
+          music.play().then(()=>{
+            musicPlaying = true;
+            document.getElementById('toggleBtn').textContent='⏸';
+            document.getElementById('musicNote').style.animationPlayState='running';
+            document.getElementById('songStatus').textContent='sedang diputar...';
+          }).catch(e=>console.log('play error:',e));
         }, 600);
       } else {
         const dots = document.getElementById('pinDots');
@@ -664,22 +673,6 @@ function goToSlide(n){
 
   // Confetti di slide 1
   if(current===1) startConfetti();
-
-  // Musik mulai di slide 4
-  if(current === 4 && prev < 4 && !musicPlaying){
-    const music = document.getElementById('bgMusic');
-    music.volume = 1.0;
-    music.currentTime = 0;
-    const playPromise = music.play();
-    if(playPromise !== undefined){
-      playPromise.then(()=>{
-        musicPlaying = true;
-        document.getElementById('toggleBtn').textContent='⏸';
-        document.getElementById('musicNote').style.animationPlayState='running';
-        document.getElementById('songStatus').textContent='sedang diputar...';
-      }).catch(e=>console.log('play error:',e));
-    }
-  }
 
   if(musicPlaying){
     // Volume pelan di slide 6 saja (surat)
