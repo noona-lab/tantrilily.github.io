@@ -457,10 +457,10 @@
       <div class="heart-deco">🌸</div>
       <div class="letter-date">Untuk Taufik, di hari istimewamu</div>
       <div class="letter-body">
-        <p>Allooow   </p>
-        <p>Selamat ulang tahun aa 🎂</p>
-        <p>Semoga di usiamu yang baru ini, kamu selalu diberi kesehatan, rezki yang berlimpah, diberi kebahagiaan.</p>
-        <p>Semoga langkahmu selalu ringan, hatimu selalu tenang, dan mimpimu satu persatu tercapai.</p>
+        <p>Allooo 👋</p>
+        <p>Selamat ulang tahun yaa! 🎂</p>
+        <p>Semoga di usiamu yang baru ini, kamu selalu diberi kesehatan, rizki yang berlimpah, diberi kebahagiaan.</p>
+        <p>Semoga langkahmu selalu ringan, hatimu selalu tenang, dan mimpimu satu-satu tercapai.</p>
         <p>Terimakasih sudah lahir dan tumbuh jadi pribadi sebaik ini, aku bangga sama kamu. 🌸</p>
         <p>Aku harap tahun ini banyak memberi kebahagiaan untukmu!</p>
       </div>
@@ -500,7 +500,7 @@
     <div class="s9-deco-top"></div>
     <div class="s9-ornament">✦ &nbsp; ✦ &nbsp; ✦</div>
     <div class="s9-quote">Aku bersyukur banget bisa mengenalmu. Semoga semesta selalu baik sama kamu, dan semoga di umurmu yang baru ini, kamu selalu dikelilingi hal-hal yang membuatmu tenang dan dicintai.</div>
-    <div class="s9-sign">Selamat ulang tahun, Taufikurohman<br>— dari Tantri  </div>
+    <div class="s9-sign">Selamat ulang tahun, Taufik<br>— dari Tantri, dengan segenap hati</div>
     <div class="s9-divider"></div>
   </div>
 
@@ -554,7 +554,7 @@ function blowCandle(){
     sent.style.animation = 'wishFadeIn 1s ease forwards';
   }, 800);
 }
-const CORRECT_PIN = '3102';
+const CORRECT_PIN = '3108';
 let pinValue = '';
 
 function pinInput(num){
@@ -665,10 +665,11 @@ function goToSlide(n){
   // Confetti di slide 1
   if(current===1) startConfetti();
 
-  // Musik mulai di slide 3
+  // Musik mulai di slide 4
   if(current === 4 && prev < 4 && !musicPlaying){
     const music = document.getElementById('bgMusic');
     music.volume = 1.0;
+    music.currentTime = 0;
     music.play().catch(e=>console.log(e));
     musicPlaying = true;
     document.getElementById('toggleBtn').textContent='⏸';
@@ -677,17 +678,17 @@ function goToSlide(n){
   }
 
   if(musicPlaying){
-    // Volume pelan di slide 4 & 5 (open amplop & surat)
-    if((current === 5 || current === 6) && prev < 5){
+    // Volume pelan di slide 6 saja (surat)
+    if(current === 6 && prev < 6){
       fadeVolume(1.0, 0.25, 1200);
-    } else if(current < 5 && (prev === 5 || prev === 6)){
+    } else if(current < 6 && prev === 6){
       fadeVolume(0.25, 1.0, 1200);
-    } else if(current === 7 && (prev === 5 || prev === 6)){
+    } else if(current === 7 && prev === 6){
       fadeVolume(0.25, 1.0, 1200);
     }
 
-    // Pause musik di slide 8 (video), resume kalau pindah
-    if(current === 8){
+    // Pause musik di slide 9 (video), resume kalau pindah
+    if(current === 9){
       setTimeout(()=>{
         const music = document.getElementById('bgMusic');
         music.pause();
@@ -696,14 +697,14 @@ function goToSlide(n){
         document.getElementById('songStatus').textContent='dijeda';
         musicPlaying=false;
       }, 300);
-    } else if(prev === 8 && current !== 8){
+    } else if(prev === 9 && current !== 9){
       const music = document.getElementById('bgMusic');
+      music.volume = 1.0;
       music.play();
       document.getElementById('toggleBtn').textContent='⏸';
       document.getElementById('musicNote').style.animationPlayState='running';
       document.getElementById('songStatus').textContent='sedang diputar...';
       musicPlaying=true;
-      fadeVolume(0, 1.0, 1000);
     }
   }
 }
