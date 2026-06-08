@@ -565,21 +565,21 @@ function pinInput(num){
     setTimeout(()=>{
       if(pinValue === CORRECT_PIN){
         const pin = document.getElementById('pin-screen');
+        // Mulai musik LANGSUNG di sini sebelum animasi apapun
+        const music = document.getElementById('bgMusic');
+        music.volume = 1.0;
+        music.currentTime = 0;
+        music.play().then(()=>{
+          musicPlaying = true;
+          document.getElementById('toggleBtn').textContent='⏸';
+          document.getElementById('musicNote').style.animationPlayState='running';
+          document.getElementById('songStatus').textContent='sedang diputar...';
+        }).catch(e=>console.log('play error:',e));
         pin.classList.add('hide');
         setTimeout(()=>{
           pin.style.display='none';
           startConfetti();
           document.getElementById('slide-1').classList.add('s1-animate');
-          // Mulai musik di sini — ada interaksi user (tap PIN), browser pasti izinkan
-          const music = document.getElementById('bgMusic');
-          music.volume = 1.0;
-          music.currentTime = 0;
-          music.play().then(()=>{
-            musicPlaying = true;
-            document.getElementById('toggleBtn').textContent='⏸';
-            document.getElementById('musicNote').style.animationPlayState='running';
-            document.getElementById('songStatus').textContent='sedang diputar...';
-          }).catch(e=>console.log('play error:',e));
         }, 600);
       } else {
         const dots = document.getElementById('pinDots');
